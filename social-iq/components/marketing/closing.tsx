@@ -132,8 +132,12 @@ export function SiteFooter() {
           <Link href="/report" className="hover:text-foreground">
             Demo
           </Link>
-          <span className="hover:text-foreground">Privacy</span>
-          <span className="hover:text-foreground">Terms</span>
+          <Link href="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-foreground">
+            Terms
+          </Link>
         </div>
       </div>
     </footer>
