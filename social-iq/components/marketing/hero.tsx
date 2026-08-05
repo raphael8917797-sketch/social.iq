@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Play, Sparkles, Flame, ShieldCheck, Star } from 'lucide-react'
+import { ArrowRight, Sparkles, Flame, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ScoreRing } from '@/components/ui/score-ring'
@@ -9,7 +9,6 @@ import { ChatBubble } from '@/components/chat-bubble'
 export function Hero() {
   return (
     <section className="relative overflow-hidden px-6 pt-36 pb-24">
-      {/* ambient glow */}
       <div className="pointer-events-none absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
       <div className="pointer-events-none absolute left-1/2 top-0 -z-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-primary/15 blur-[140px]" />
 
@@ -35,39 +34,13 @@ export function Hero() {
               Analyze my conversation
               <ArrowRight className="size-4" />
             </Button>
-            <Button size="xl" variant="glass" render={<Link href="/report" />}>
-              <Play className="size-4" />
-              See demo
-            </Button>
-          </div>
-
-          <div className="mt-10 flex items-center gap-4">
-            <div className="flex -space-x-2">
-              {['#FF6B57', '#6366F1', '#22C55E', '#F59E0B'].map((c) => (
-                <span
-                  key={c}
-                  className="size-8 rounded-full border-2 border-background"
-                  style={{ background: c }}
-                />
-              ))}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              <div className="flex items-center gap-1 text-foreground">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-3.5 fill-primary text-primary" />
-                ))}
-                <span className="ml-1 font-medium">4.9</span>
-              </div>
-              Trusted by 120,000+ better communicators
-            </div>
           </div>
         </div>
 
-        {/* Floating preview cluster */}
         <div className="relative mx-auto h-[520px] w-full max-w-md">
           <Card
             glass
-            className="absolute left-0 top-6 w-56 animate-float p-5 [--tw-rotate:-4deg]"
+            className="absolute left-0 top-6 w-56 animate-float p-5"
             style={{ transform: 'rotate(-4deg)' }}
           >
             <div className="flex items-center justify-center">
