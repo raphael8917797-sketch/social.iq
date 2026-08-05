@@ -1,66 +1,104 @@
 'use client'
 
-import { useState } from 'react'
+import * as React from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type AccordionItem = {
-  id: string
-  trigger: React.ReactNode
-  content: React.ReactNode
+type AccordionContextType = {
+  openItems: Set<string>
+  toggle: (value: string) => void
 }
 
+const AccordionContext = React.createContext<AccordionContextType | null>(null)
+
 export function Accordion({
-  items,
-  defaultOpen,
+  children,
   className,
+  type = 'single',
 }: {
-  items: AccordionItem[]
-  defaultOpen?: string
+  children: React.ReactNode
   className?: string
+  type?: 'single' | 'multiple'
 }) {
-  const [open, setOpen] = useState<string | null>(defaultOpen ?? null)
+  const [openItems, setOpenItems] = React.useState<Set<string>>(new Set())
+
+  function toggle(value: string) {
+    setOpenItems((prev) => {
+      const next = new Set(type === 'single' ? [] : prev)
+      if (prev.has(value)) {
+        next.delete(value)
+      } else {
+        next.add(value)
+      }
+      return next
+    })
+  }
 
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
-      {items.map((item) => {
-        const isOpen = open === item.id
-        return (
-          <div
-            key={item.id}
-            className={cn(
-              'overflow-hidden rounded-2xl border transition-colors',
-              isOpen ? 'border-primary/30 bg-card' : 'border-border bg-card/60',
-            )}
-          >
-            <button
-              onClick={() => setOpen(isOpen ? null : item.id)}
-              className="flex w-full items-center justify-between gap-4 p-5 text-left"
-              aria-expanded={isOpen}
-            >
-              <div className="min-w-0 flex-1">{item.trigger}</div>
-              <ChevronDown
-                className={cn(
-                  'size-5 shrink-0 text-muted-foreground transition-transform duration-300',
-                  isOpen && 'rotate-180 text-primary',
-                )}
-              />
-            </button>
-            <div
-              className={cn(
-                'grid transition-all duration-300 ease-out',
-                isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-              )}
-            >
-              <div className="overflow-hidden">
-                <div className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">
-                  {item.content}
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      })}
-    </div>
+    <AccordionContext.Provider value={{ openItems, toggle }}>
+      <div className={className}>{children}</div>
+    </AccordionContext.Provider>
   )
+}
+
+const AccordionItemContext = React.createContext<string>('')
+
+export function AccordionItem({
+  children,
+  value,
+  className,
+}: {
+  children: React.ReactNode
+  value: string
+  className?: string
+}) {
+  return (
+    <AccordionItemContext.Provider value={value}>
+      <div className={cn('border-b border-border', className)}>{children}</div>
+    </AccordionItemContext.Provider>
+  )
+}
+
+export function AccordionTrigger({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  const ctx = React.useContext(AccordionContext)
+  const value = React.useContext(AccordionItemContext)
+  if (!ctx) throw new Error('AccordionTrigger must be used inside Accordion')
+  const open = ctx.openItems.has(value)
+
+  return (
+    <button
+      onClick={() => ctx.toggle(value)}
+      className={cn(
+        'flex w-full items-center justify-between py-4 text-left text-sm font-medium transition-all',
+        className,
+      )}
+    >
+      {children}
+      <ChevronDown
+        className={cn('size-4 shrink-0 transition-transform duration-200', open && 'rotate-180')}
+      />
+    </button>
+  )
+}
+
+export function AccordionContent({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  const ctx = React.useContext(AccordionContext)
+  const value = React.useContext(AccordionItemContext)
+  if (!ctx) throw new Error('AccordionContent must be used inside Accordion')
+  const open = ctx.openItems.has(value)
+  if (!open) return null
+
+  return <div className={cn('pb-4 text-sm text-muted-foreground', className)}>{children}</div>
 }
