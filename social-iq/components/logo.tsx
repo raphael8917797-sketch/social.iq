@@ -1,22 +1,51 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-export function Logo({ className, href = '/' }: { className?: string; href?: string }) {
+function ChatBoltIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn('shrink-0', className)}
+      aria-hidden="true"
+    >
+      <path
+        d="M36 18.8C36 28.6 28.6 36 18.8 36C15.8 36 13 35.2 10.6 33.8L4 36L6.2 29.4C4.8 27 4 24.2 4 21.2C4 11.4 11.4 4 21.2 4H36V18.8Z"
+        fill="url(#chat-gradient)"
+      />
+      <path
+        d="M24 12L14 23H20.5L18 31L28 20H21.5L24 12Z"
+        fill="white"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <defs>
+        <linearGradient id="chat-gradient" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FF7B3D" />
+          <stop offset="1" stopColor="#FF5F1F" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+export function Logo({
+  className,
+  href = '/',
+  showText = true,
+}: {
+  className?: string
+  href?: string
+  showText?: boolean
+}) {
   return (
     <Link href={href} className={cn('inline-flex items-center gap-2.5', className)}>
-      <span className="relative grid size-8 place-items-center rounded-xl bg-gradient-to-br from-primary to-[#FF9A7A] shadow-[0_6px_18px_-6px_color-mix(in_oklab,var(--primary)_80%,transparent)]">
-        <svg viewBox="0 0 24 24" className="size-4 text-primary-foreground" fill="none">
-          <path
-            d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7A2.5 2.5 0 0 1 17.5 16H10l-4 4v-4H6.5A2.5 2.5 0 0 1 4 13.5v-7Z"
-            fill="currentColor"
-            opacity="0.95"
-          />
-          <circle cx="9" cy="10" r="1.1" fill="var(--primary)" />
-          <circle cx="12" cy="10" r="1.1" fill="var(--primary)" />
-          <circle cx="15" cy="10" r="1.1" fill="var(--primary)" />
-        </svg>
-      </span>
-      <span className="text-[15px] font-semibold tracking-tight">SocialIQ</span>
+      <ChatBoltIcon className="h-9 w-9" />
+      {showText && (
+        <span className="text-lg font-bold tracking-tight text-foreground">Social.IQ</span>
+      )}
     </Link>
   )
 }
